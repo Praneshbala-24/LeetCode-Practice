@@ -1,15 +1,31 @@
+#include <stack>
+#include <unordered_map>
+using namespace std;
+
 class Solution {
 public:
     bool isValid(string s) {
         stack<char> st;
-        for(char ch:s){
-            if(ch=='('||ch=='{'||ch=='['){
-                st.push(ch);
-            }else{
-                if(st.empty()) return false;
-                if((ch==')'&&st.top()!='(')||(ch=='}')&&st.top()!='{'||(ch==']'&& st.top()!='[')){
-                   return false;} st.pop();
+        unordered_map<char, char> bracketMap = {
+            {')', '('},
+            {']', '['},
+            {'}', '{'}
+        };
+
+        for (char c : s) {
+            // If it's a closing bracket
+            if (bracketMap.count(c)) {
+                if (st.empty() || st.top() != bracketMap[c]) {
+                    return false;
                 }
-            }return st.empty();
+                st.pop(); // matched opening bracket found
+            } else {
+                // It's an opening bracket
+                st.push(c);
+            }
         }
-    };
+
+        // If stack is empty, all brackets matched
+        return st.empty();
+    }
+};
